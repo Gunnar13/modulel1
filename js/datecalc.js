@@ -1,6 +1,7 @@
 import { DateTime, Duration, Interval, LocalZone } from "./esm.js"; // 1
-
-
+import { loadScript } from "./loadScript.js";
+//import { sound } from "./howscript.js";
+//import { Howl } from "./howler.min.js";
 let dur = Duration.fromObject({ years: 0, months: 5, hours: 2, minutes: 7, seconds: 9 });
 
 
@@ -55,7 +56,12 @@ export function timer5(timer2, d1, d2) {
 
 */
 
-
+export function setTimeou(timer2) {
+    let t1 = DateTime.fromISO(timer2);
+    let dd = Duration.fromObject({ hours: t1.hour, minutes: t1.minute, seconds: t1.second }).toObject();
+    let timeOut = Duration.fromObject(dd).as('milliseconds');
+    return timeOut
+}
 
 export function ttt(timer2) {
     let t1 = DateTime.fromISO(timer2);
@@ -65,7 +71,9 @@ export function ttt(timer2) {
     //let timer22 = new Duration(['years', 'months', 'hours', 'minutes', 'seconds']).toObject();
     let dd = Duration.fromObject({ hours: t1.hour, minutes: t1.minute, seconds: t1.second }).toObject();
     let t3 = t2.plus(dd);
-
+    //let dd1 = Duration.fromObject(dd).as('milliseconds');
+    //alert(dd)
+    //t3.fromObject().as('seconds')
     //alert(ddd);
     ////    let getCurTime = t3.diff(t2, ['years', 'months', 'days', 'hours', 'minutes', 'seconds']).toObject();
 
@@ -95,15 +103,41 @@ dd = Duration.fromObject({
 
 }
 
-export function getCountdown(timer6, t3) {
+export function stopTimer(timerId) {
+    clearInterval(timerId)
+    const timer6 = document.getElementById("timer6");
+    timer6.innerHTML = '00:00:00 ';
+
+    loadScript("js/howler.min.js", () => {
+        // alert('hi');
+        console.log("timer.js ");
+        const sound = new Howl({
+            src: ['js/sound2.mp3'],
+            volume: 0.5,
+            onend: function () {
+                alert('Finished!');
+            }
+        });
+        sound.play()
+
+    })
+
+
+    return
+}
+
+
+export function pauseTimer(timerId) {
+    //alert('stop');
+    clearInterval(timerId)
+    return
+}
+export function getCountdown(t3) {
     let t2 = DateTime.local();
+    //if (t2 <= t3) {
     let getCurTime = t3.diff(t2, ['years', 'months', 'days', 'hours', 'minutes', 'seconds']).toObject();
-    timer6.innerHTML = timerToHtml(getCurTime);
 
-
-
-
-    return;
+    return getCurTime
 
     /*  Можно и по другому реализовать таймер через пеервод времени
      в секунды потом вычитая секугду и обратно в формат времени

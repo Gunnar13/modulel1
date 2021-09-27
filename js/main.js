@@ -1,15 +1,20 @@
 //loadScript("js/load.js", () => {
 //console.log('main.js');
 import { printOutput } from "./output.js";
-import { ttt, diffDates, diffToHtml, getCountdown, } from "./datecalc.js";
+import { ttt, diffDates, diffToHtml, getCountdown, timerToHtml, setTimeou, pauseTimer, stopTimer } from "./datecalc.js";
+//import { Howl } from "https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.1/howler.min.js";
+import { loadScript } from "./loadScript.js";
+
+//stopTimer, pauseTimer,
 
 const dateCalcForm = document.getElementById("datecalc");    //выбрать блоки с которыми работать
 const dateCalcResult = document.getElementById("datecalc__result");
 dateCalcForm.addEventListener("submit", handleCalcDates);
-//let firstDate, secondDate;
+
 //const timer4 = document.getElementById("timer3");
 //const timer = document.getElementById("timer1");
 //timer.addEventListener("submit", outTimer);
+const label = document.getElementById('label');
 
 const timer6 = document.getElementById("timer6");
 const mytimer = document.getElementById("mytimer");
@@ -19,6 +24,8 @@ stopButton.addEventListener("click", ddddd);
 const clearButton = document.getElementById("clearbtn");
 clearButton.addEventListener("click", clear);
 let timerId = null;
+
+
 
 function handleCalcDates(event) {
     dateCalcResult.innerHTML = "";
@@ -41,35 +48,58 @@ function handleCalcDates(event) {
     }
 
 }
+
 function outTimer2(event) {
     timer6.innerHTML = ' ';
     event.preventDefault();
     let { timer2 } = event.target.elements;
     timer2 = timer2.value;
-    let t3 = ttt(timer2);
+    //let dd1;
+    let t3 = ttt(timer2);                   //вычислить конечное врем таймера
 
-    let timerid = start(timer6, t3);
-    //timerId = setInterval(() => getCountdown(timer6, t3), 1000);
+    let timeOut = setTimeou(timer2);        //вычислить время для setTimeout(() в миллисекундах 
+
+    start(timer6, t3, timeOut);
+
     return
 
 }
 
-function start(timer6, t3) {
-    //alert('hello');
-    timerId = setInterval(() => getCountdown(timer6, t3), 1000);
-}
 
+function start(timer6, t3, timeOut) {
+    timerId = setInterval(() => {
+        // getCountdown(t3);
+        let getCurTime = getCountdown(t3);
+        timer6.innerHTML = timerToHtml(getCurTime);
+    }, 1000);
+    setTimeout(() => {
+        clearInterval(timerId);
+        //timer6.innerHTML = '00:00:00 ';
+        clear();
+    }, timeOut);
+
+    /*    const timerID = setInterval(() => {
+            let getCurTime = getCountdown(t3);
+            timer6.innerHTML = timerToHtml(getCurTime);
+        }, 1000);
+        setTimeout(() => { clearInterval(timerID); timer6.innerHTML = '00:00:00 '; }, timeOut);
+        //const stopped = clearInterval(timerID);
+        return*/
+}
 
 
 function ddddd() {
-    //alert('stop');
-    clearInterval(timerId)
+    pauseTimer(timerId)
     return
 }
-function clear() {
-    timer6.innerHTML = '00:00:00 ';
 
+
+
+function clear() {
+    stopTimer(timerId);
 }
+
+
 /*
 function getCountdown1() {
     //getCurTime = Duration.fromObject(getCurTime).as('seconds');
